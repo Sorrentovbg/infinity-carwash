@@ -1,0 +1,20 @@
+server:
+  port: 8190
+spring:
+  application:
+    name: ms-product
+  session:
+    jdbc:
+      initialize-schema: always
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQL95Dialect
+      show_sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/product_db?currentSchema=product_sh
+    username: postgres
+    password:  1qaz@WSX
+  flyway:
+    enabled: true
