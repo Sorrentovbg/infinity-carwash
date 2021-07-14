@@ -1,0 +1,24 @@
+package ru.infinitycarwash.msauth.entities;
+
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "user_tb")
+@Data
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column
+    private String login;
+
+    @Column
+    private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+}

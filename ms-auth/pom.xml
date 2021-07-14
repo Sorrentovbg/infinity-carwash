@@ -9,8 +9,6 @@
         <version>1.0</version>
     </parent>
 
-
-
     <groupId>ru.infinity-carwash</groupId>
     <artifactId>ms-auth</artifactId>
     <version>0.0.1</version>
@@ -27,6 +25,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -36,16 +39,9 @@
             <groupId>ru.infinity-carwash.carwash</groupId>
             <artifactId>core-lib</artifactId>
             <version>0.0.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

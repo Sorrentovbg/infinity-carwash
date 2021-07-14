@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "product")
+@Table(name = "product_tb")
 
 @Data
 @AllArgsConstructor
@@ -27,4 +27,6 @@ public class Product {
     @Column(name = "product_price")
     private int productPrice;
 
+    @Column(name = "job_duration")
+    private int jobDuration;
 }

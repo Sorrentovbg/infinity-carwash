@@ -13,14 +13,14 @@ import ru.infinitycarwash.msproduct.services.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/infinity/home")
+@RequestMapping("/infinity/product")
 @RequiredArgsConstructor
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
-    @GetMapping
+    @GetMapping("/getAllProduct")
     public List<ProductDto> getAllProduct(){
         return productService.getAllProduct();
     }

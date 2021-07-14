@@ -1,8 +1,8 @@
 server:
-  port: 8190
+  port: 19871
 spring:
   application:
-    name: ms-product
+    name: ms-order
   session:
     jdbc:
       initialize-schema: always
@@ -18,3 +18,9 @@ spring:
     password:  1qaz@WSX
   flyway:
     enabled: true
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+    fetch-registry: true
+    register-with-eureka: true
