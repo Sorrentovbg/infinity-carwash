@@ -1,18 +1,33 @@
 create schema if not exists order_sh;
 
-create table order_tb(
-     id                  bigserial
-                         primary key,
-     customer_name       varchar(250) not null,
-     car_number          varchar(50) not null,
-     product_name        varchar(15) not null,
-     data                date not null,
-     time                time not null
+create table status (
+    status_id       bigserial primary key,
+    orders_status   varchar(35) not null,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp
 );
 
-insert into order_tb(customer_name, car_number, product_name, data, time) values
-    ('Михаил', 'х952рл47', 'мойка', '2021-07-18', '09:30:00'),
-    ('Кирилл', 'х852рл78', 'мойка', '2021-07-15', '12:30:00'),
-    ('Кирилл', 'х855рл78', 'мойка', '2021-07-15', '15:00:00'),
-    ('Александр', 'з875ке147', 'мойка', '2021-07-18', '10:00:00');
+create table order_tb(
+    id                  bigserial
+                        primary key,
+    user_id             bigserial not null,
+    product_id          bigserial not null,
+    car_number          varchar(50) not null,
+    data                date not null,
+    time                time not null,
+    created_at timestamp default current_timestamp
+);
+insert into status (orders_status) values
+('Not paid'),
+('Paid'),
+('Completed');
+
+
+insert into order_tb(user_id, product_id, car_number, data, time) values
+    (1, 1,'х952рл47', '2021-07-18', '09:30:00'),
+    (2, 1 ,'х852рл78', '2021-07-16', '12:30:00'),
+    (3, 1, 'х855рл78', '2021-07-16', '15:00:00'),
+    (1, 1, 'з875ке147', '2021-07-18', '10:00:00');
+
+
 

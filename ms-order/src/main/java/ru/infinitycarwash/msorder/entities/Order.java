@@ -3,12 +3,14 @@ package ru.infinitycarwash.msorder.entities;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
+
 
 @Entity
 @Table(name = "order_tb")
@@ -21,14 +23,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "customer_name")
-    private String customerName;
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "product_Id")
+    private Long productId;
 
     @Column(name = "car_number")
     private String carNumber;
-
-    @Column(name = "product_name")
-    private String productName;
 
     @Column(name = "data")
     private LocalDate date;
@@ -36,10 +38,14 @@ public class Order {
     @Column(name = "time")
     private LocalTime time;
 
-    public Order(String customerName, String carNumber, String productName, LocalDate date, LocalTime time) {
-        this.customerName = customerName;
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    public Order(Long userId, Long productId, String carNumber, LocalDate date, LocalTime time) {
+        this.userId = userId;
+        this.productId = productId;
         this.carNumber = carNumber;
-        this.productName = productName;
         this.date = date;
         this.time = time;
     }

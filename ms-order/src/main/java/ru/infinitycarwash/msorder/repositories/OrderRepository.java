@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.infinitycarwash.msorder.entities.Order;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +12,10 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    List<Order> findAllByDateAndProductName(LocalDate currentDate, String productName);
+    List<Order> findAllByDateAndProductId(LocalDate currentDate, Long productId);
 
     Optional<Order> findOrderByDateAndTime(LocalDate currentDate, LocalTime localTime);
+
+    List<Order> findAllByUserId(Long id);
 
 }

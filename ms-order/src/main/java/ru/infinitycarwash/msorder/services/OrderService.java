@@ -1,9 +1,22 @@
 package ru.infinitycarwash.msorder.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.infinitycarwash.corelib.entities.dto.OrderDto;
+
+
+import ru.infinitycarwash.corelib.entities.dto.OrderView;
+import ru.infinitycarwash.corelib.entities.dto.ProductDto;
+import ru.infinitycarwash.eurekafeign.product.ProductFeign;
 import ru.infinitycarwash.msorder.entities.Order;
+import ru.infinitycarwash.msorder.entities.Status;
 import ru.infinitycarwash.msorder.repositories.OrderRepository;
+import ru.infinitycarwash.corelib.entities.UserInfo;
+import ru.infinitycarwash.msorder.repositories.StatusRepository;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -12,6 +25,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -19,33 +33,22 @@ public class OrderService {
     LocalTime workDayEnd = LocalTime.of(21,00,00);
 
 
-
     @Autowired
     private OrderRepository orderRepository;
 
-    public Optional<Order> findById(long id) {
-        return orderRepository.findById(id);
-    }
+    @Autowired
+    private ProductFeign productClientFeign;
 
-//    public void createOrder(String userName,String phoneNumber, String productName, int month, int day, String time) {
-//        String[] hourAndMinute = time.split(":",2);
-//        int hour = Integer.parseInt(hourAndMinute[0]);
-//        int minute = Integer.parseInt(hourAndMinute[1]);
-//        LocalDate serviceDate = LocalDate.of(LocalDate.now().getYear(),month,day);
-//        LocalTime serviceTime = LocalTime.of(hour,minute);
-//        orderRepository.save(new Order(userName, phoneNumber, productName, serviceDate, serviceTime));
-//    }
+    @Autowired
+    private StatusRepository statusRepository;
 
-//    public List<Order> getFreeTime(String productName, int month, int day) {
-//        LocalDate serviceDate = LocalDate.of(LocalDate.now().getYear(),month,day);
-//        return orderRepository.findAllByDate(serviceDate);
-//    }
 
-    public List<LocalTime> getFreeTime(String productName, int month,int day) {
+    public List<LocalTime> getFreeTime(Long productId, int month, int day) {
         List<LocalTime> freeTime = new ArrayList<>();
-        List<Order> listOrderCurrentDay = orderRepository.findAllByDateAndProductName(
+        ProductDto productDto = productClientFeign.getProductDto(productId);
+        List<Order> listOrderCurrentDay = orderRepository.findAllByDateAndProductId(
                                             LocalDate.of(LocalDate.now().getYear(),month,day),
-                                            productName);
+                                            productId);
         LocalTime localTimeStart = workDayStart;
 
         while((localTimeStart.compareTo(workDayEnd)) != 0){
@@ -58,7 +61,7 @@ public class OrderService {
                     freeTime.add(localTimeStart);
                 }
             }
-            localTimeStart = localTimeStart.plusMinutes(30);
+            localTimeStart = localTimeStart.plusMinutes(productDto.getJobDuration());
         }
         for(Order order: listOrderCurrentDay){
             freeTime.removeIf(time -> order.getTime().compareTo(time) == 0);
@@ -66,11 +69,17 @@ public class OrderService {
         return freeTime;
     }
 
-    public synchronized void createOrder(Order order) {
-        Optional<Order> orderCheck = orderRepository.findOrderByDateAndTime(order.getDate(),order.getTime());
+    @Transactional
+    public synchronized void createOrder(UserInfo userInfo, OrderDto orderDto) {
+        Optional<Order> orderCheck = orderRepository.findOrderByDateAndTime(orderDto.getDate(),orderDto.getTime());
         if(orderCheck.isPresent()){
             throw new RuntimeException();
         }else{
+            Order order = new Order(userInfo.getUserId(),
+                    orderDto.getProductId(),
+                    orderDto.getCarNumber(),
+                    orderDto.getDate(),
+                    orderDto.getTime());
             orderRepository.save(order);
         }
     }
@@ -82,5 +91,40 @@ public class OrderService {
         return String.format("%02d часов %02d минут",
                 leftTime.toHours(),
                 leftTime.toMinutesPart());
+    }
+
+    public List<OrderView> getOrders(UserInfo userInfo) {
+        List<OrderView> orders = orderRepository.findAllByUserId(userInfo.getUserId())
+                .stream().map(this::toOrderView)
+                .collect(Collectors.toList());
+        orders.removeIf(orderView -> orderView.getDate().isBefore(LocalDate.now()));
+        return orders;
+    }
+
+    public OrderView toOrderView(Order order){
+        ProductDto productDto = productClientFeign.getProductDto(order.getId());
+
+
+        return new OrderView(order.getId(),
+                productDto.getProductName(),
+                order.getCarNumber(),
+                order.getDate(),
+                order.getTime());
+    }
+
+    @Transactional
+    public void deleteOrder(Long id) {
+        Optional<Order> order = orderRepository.findById(id);
+        if(order.isPresent()){
+            orderRepository.delete(order.get());
+        }else{
+            throw new RuntimeException("Order not exists");
+        }
+    }
+
+    public Page<OrderView> getAllOrders(Integer page, String sort, int size, Integer day) {
+        Page<OrderView> orders = orderRepository.findAll(PageRequest.of(page -1, size,
+                     Sort.by(Sort.Direction.DESC, "data"))).map(this::toOrderView);
+        return orders;
     }
 }

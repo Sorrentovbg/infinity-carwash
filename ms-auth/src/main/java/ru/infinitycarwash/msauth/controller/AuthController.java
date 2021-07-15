@@ -1,7 +1,8 @@
 package ru.infinitycarwash.msauth.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.infinitycarwash.corelib.entities.UserInfo;
 import ru.infinitycarwash.corelib.entities.dto.AuthRequestDto;
@@ -15,6 +16,7 @@ import ru.infinitycarwash.msauth.services.UserService;
 
 @RestController
 @RequestMapping("/infinity/auth")
+@Api(value = "/Auth", tags = {"Регистрация и авторизация"})
 public class AuthController {
 
     @Autowired
@@ -26,16 +28,13 @@ public class AuthController {
     @Autowired
     private RedisService redisService;
 
-    @PostMapping("/signup")
-    public String signUp(@RequestBody SignUpRequestDto signUpRequest) {
-        User user = new User();
-        user.setPassword(signUpRequest.getPassword());
-        user.setLogin(signUpRequest.getLogin());
-        userService.saveUser(user);
-        return "OK";
-    }
 
     @PostMapping("/login")
+    @ApiOperation(
+            value = "Залогинится в сервисе",
+            httpMethod = "POST",
+            response = AuthResponseDto.class
+    )
     public AuthResponseDto login(@RequestBody AuthRequestDto request) {
         User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
 
@@ -48,18 +47,31 @@ public class AuthController {
         return new AuthResponseDto(token);
     }
 
+    @PostMapping("/signup")
+    @ApiOperation(
+            value = "Регистрация в сервисе",
+            httpMethod = "POST",
+            response = String.class
+    )
+    public String signUp(@RequestBody SignUpRequestDto signUpRequest) {
+        User user = new User();
+        user.setPassword(signUpRequest.getPassword());
+        user.setLogin(signUpRequest.getLogin());
+        userService.saveUser(user);
+        return "OK";
+    }
+
+
     @GetMapping("/logout")
+    @ApiOperation(
+            value = "Выход в сервисе",
+            httpMethod = "GET"
+    )
     public void logout(@RequestHeader String authorization){
         UserInfo userInfo = tokenService.parseToken(authorization);
         System.out.println("logout(token) = " + authorization);
         System.out.println("UserInfo " + userInfo.getUserId());
         redisService.putInvalidToken(authorization);
-    }
-
-    @GetMapping("/check")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public String check() {
-        return "OK!";
     }
 
     @GetMapping("/getuser")

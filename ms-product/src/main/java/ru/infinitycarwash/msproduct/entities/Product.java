@@ -21,12 +21,16 @@ public class Product {
     @Column(name = "product_name")
     private String productName;
 
-    @Column(name = "product_description")
-    private String productDescription;
+    @Column(name = "product_short_description")
+    private String productShortDescription;
+
+    @Column(name = "product_full_description")
+    private String productFullDescription;
 
     @Column(name = "product_price")
     private int productPrice;
 
     @Column(name = "job_duration")
     private int jobDuration;
+
 }

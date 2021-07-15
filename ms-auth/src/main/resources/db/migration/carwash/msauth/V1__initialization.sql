@@ -23,5 +23,8 @@ insert into role_tb(name) values
     ('ROLE_USER');
 
 insert into user_tb (login, password,role_id) values
-('admin', '1',1),
-('user', '1',1);
+('admin', '$2a$10$Ekislj10PrJBtC0LWfstlucrRftmDcRoH9Dy.DLHdNzp4dnOHNqDO',1),
+('user1', '$2a$10$Ekislj10PrJBtC0LWfstlucrRftmDcRoH9Dy.DLHdNzp4dnOHNqDO',2),
+('user2', '$2a$10$Ekislj10PrJBtC0LWfstlucrRftmDcRoH9Dy.DLHdNzp4dnOHNqDO',2),
+('user2', '$2a$10$Ekislj10PrJBtC0LWfstlucrRftmDcRoH9Dy.DLHdNzp4dnOHNqDO',2),
+('user3', '$2a$10$Ekislj10PrJBtC0LWfstlucrRftmDcRoH9Dy.DLHdNzp4dnOHNqDO',2);

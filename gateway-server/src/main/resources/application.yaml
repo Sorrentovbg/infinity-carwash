@@ -24,16 +24,16 @@ spring:
         - id: ms-auth
           uri: lb://ms-auth
           predicates:
-            - Path=/infinity/*/auth/**
+            - Path=/infinity/auth/**
 
         - id: ms-product
           uri: lb://ms-product
           predicates:
-            - Path=/infinity/*/product/**
+            - Path=/infinity/product/home/**,/infinity/product/admin/**
         - id: ms-order
           uri: lb://ms-order
           predicates:
-            - Path=/infinity/*/order/**
+            - Path=/infinity/order/home/**, /infinity/order/admin/**
     loadbalancer:
       ribbon:
         enabled: false

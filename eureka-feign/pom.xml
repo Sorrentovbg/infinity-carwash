@@ -10,15 +10,27 @@
     </parent>
 
     <groupId>ru.infinity.infinity-carwash</groupId>
-    <artifactId>eurekaserver</artifactId>
+    <artifactId>eureka-feign</artifactId>
     <version>0.0.1</version>
-    <name>eurekaserver</name>
+    <name>eureka-feign</name>
 
     <dependencies>
-    <!--Eureka Client        -->
+    <!--Cloud Feign Client    -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+    <!--Eureka Client-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+    <!--Local Dependency-->
+        <dependency>
+            <groupId>ru.infinity.infinity-carwash</groupId>
+            <artifactId>core-lib</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
         </dependency>
 
     </dependencies>

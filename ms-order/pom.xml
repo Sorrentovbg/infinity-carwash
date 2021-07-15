@@ -8,7 +8,7 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>ru.infinity-carwash</groupId>
+    <groupId>ru.infinity.infinity-carwash</groupId>
     <artifactId>ms-order</artifactId>
     <version>0.0.1</version>
     <name>ms-order</name>
@@ -19,15 +19,22 @@
     </properties>
 
     <dependencies>
-
+    <!--Eureka Client-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
+    <!--Local Dependency-->
+        <dependency>
+            <groupId>ru.infinity.infinity-carwash</groupId>
+            <artifactId>core-lib</artifactId>
+            <version>0.0.1</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
-            <groupId>ru.infinity-carwash.carwash</groupId>
-            <artifactId>core-lib</artifactId>
+            <groupId>ru.infinity.infinity-carwash</groupId>
+            <artifactId>eureka-feign</artifactId>
             <version>0.0.1</version>
             <scope>compile</scope>
         </dependency>
